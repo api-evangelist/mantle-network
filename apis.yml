@@ -1,0 +1,176 @@
+aid: mantle-network
+url: https://raw.githubusercontent.com/api-evangelist/mantle-network/refs/heads/main/apis.yml
+name: Mantle Network
+kind: company
+description: >-
+  Mantle is a high-performance, EVM-compatible Ethereum Layer 2 network with a
+  modular architecture that combines an optimistic rollup execution layer with
+  EigenDA for data availability. The ecosystem also includes Mantle Liquid
+  Staking Protocol (mETH) and Mantle Restaked ETH. Developer surface is built
+  on standard Ethereum JSON-RPC endpoints (mainnet and Mantle Sepolia testnet),
+  WebSocket subscriptions, the Mantle Explorer (Blockscout-based REST API),
+  a canonical L1 <-> L2 bridge, and standard EVM SDKs (viem, ethers, Hardhat,
+  Foundry, Thirdweb).
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Layer 2
+  - Ethereum
+  - Rollup
+  - EigenDA
+  - Liquid Staking
+  - JSON-RPC
+  - Crypto
+  - Web3
+created: '2026-05-23'
+modified: '2026-05-23'
+specificationVersion: '0.19'
+apis:
+  - aid: mantle-network:json-rpc-mainnet
+    name: Mantle JSON-RPC (Mainnet)
+    description: >-
+      Standard Ethereum JSON-RPC endpoint for Mantle mainnet (chain ID 5000).
+      Used by wallets, dApps, indexers, and tooling to read chain state and
+      submit transactions on the Mantle L2.
+    humanURL: https://docs.mantle.xyz/
+    baseURL: https://rpc.mantle.xyz
+    tags:
+      - JSON-RPC
+      - Mainnet
+      - EVM
+    properties:
+      - type: Documentation
+        url: https://docs.mantle.xyz/network/for-developers/resources-and-tooling/node-endpoints-and-providers
+  - aid: mantle-network:websocket-mainnet
+    name: Mantle WebSocket (Mainnet)
+    description: >-
+      WebSocket endpoint for real-time JSON-RPC subscriptions on Mantle
+      mainnet - new blocks, new pending transactions, and log subscriptions.
+    humanURL: https://docs.mantle.xyz/
+    baseURL: wss://wss.mantle.xyz
+    tags:
+      - WebSocket
+      - JSON-RPC
+      - Subscriptions
+    properties:
+      - type: Documentation
+        url: https://docs.mantle.xyz/network/for-developers/resources-and-tooling/node-endpoints-and-providers
+  - aid: mantle-network:json-rpc-sepolia
+    name: Mantle JSON-RPC (Sepolia Testnet)
+    description: >-
+      Standard Ethereum JSON-RPC endpoint for the Mantle Sepolia testnet, used
+      for development, contract deployment dry runs, and integration testing.
+    humanURL: https://docs.mantle.xyz/
+    baseURL: https://rpc.sepolia.mantle.xyz
+    tags:
+      - JSON-RPC
+      - Testnet
+      - Sepolia
+    properties:
+      - type: Documentation
+        url: https://docs.mantle.xyz/network/for-developers/resources-and-tooling/node-endpoints-and-providers
+  - aid: mantle-network:explorer-api
+    name: Mantle Explorer API
+    description: >-
+      Blockscout-based REST API behind explorer.mantle.xyz - blocks,
+      transactions, addresses, tokens, smart-contract verification, and event
+      log endpoints. Used by analytics dashboards and portfolio tools.
+    humanURL: https://explorer.mantle.xyz/
+    baseURL: https://explorer.mantle.xyz/api
+    tags:
+      - Explorer
+      - REST
+      - Blockscout
+    properties:
+      - type: Website
+        url: https://explorer.mantle.xyz/
+  - aid: mantle-network:bridge
+    name: Mantle Bridge
+    description: >-
+      Canonical L1 <-> L2 bridge for ETH, MNT, ERC-20, and ERC-721 assets
+      between Ethereum mainnet and Mantle. dApps integrate via the published
+      Standard Bridge contracts and the Mantle SDK.
+    humanURL: https://app.mantle.xyz/bridge
+    baseURL: https://app.mantle.xyz/bridge
+    tags:
+      - Bridge
+      - L1
+      - L2
+      - Assets
+    properties:
+      - type: Website
+        url: https://app.mantle.xyz/bridge
+      - type: Documentation
+        url: https://docs.mantle.xyz/network/for-developers/bridging-assets/manual-bridging
+  - aid: mantle-network:mantle-sdk
+    name: Mantle SDK
+    description: >-
+      TypeScript SDK for bridging MNT, ETH, ERC-20, and ERC-721 tokens between
+      Ethereum L1 and Mantle L2. Mirrors the Optimism SDK shape and wraps the
+      Standard Bridge contracts.
+    humanURL: https://github.com/mantlenetworkio/mantle-tutorial
+    baseURL: https://github.com/mantlenetworkio
+    tags:
+      - SDK
+      - TypeScript
+      - Bridge
+    properties:
+      - type: Repository
+        url: https://github.com/mantlenetworkio
+  - aid: mantle-network:meth-protocol
+    name: Mantle Liquid Staking Protocol (mETH)
+    description: >-
+      Mantle LSP issues mETH, a liquid staking token backed by ETH staked to
+      Ethereum validators. Smart contracts on Ethereum L1 expose stake, unstake,
+      and accounting functions; dApps and aggregators integrate via the
+      published contract ABIs.
+    humanURL: https://www.meth.mantle.xyz/
+    baseURL: https://github.com/mantle-lsp/contracts
+    tags:
+      - Liquid Staking
+      - mETH
+      - Smart Contracts
+    properties:
+      - type: Repository
+        url: https://github.com/mantle-lsp/contracts
+      - type: Website
+        url: https://www.meth.mantle.xyz/
+  - aid: mantle-network:op-stack
+    name: Mantle OP Stack Fork
+    description: >-
+      Mantle's node software, forked from Optimism's OP Stack and modified to
+      use EigenDA for data availability and a token-gas MNT model. Source for
+      op-node, op-batcher, op-proposer, and op-geth equivalents used by Mantle.
+    humanURL: https://github.com/mantlenetworkio/mantle
+    baseURL: https://github.com/mantlenetworkio/mantle
+    tags:
+      - Node
+      - OP Stack
+      - EigenDA
+    properties:
+      - type: Repository
+        url: https://github.com/mantlenetworkio/mantle
+common:
+  - type: Website
+    url: https://www.mantle.xyz/
+  - type: Documentation
+    url: https://docs.mantle.xyz/
+  - type: GitHub
+    url: https://github.com/mantlenetworkio
+  - type: Explorer
+    url: https://explorer.mantle.xyz/
+  - type: Bridge
+    url: https://app.mantle.xyz/bridge
+  - type: X
+    url: https://x.com/Mantle_Official
+  - type: Discord
+    url: https://discord.gg/0xMantle
+integrations:
+  - name: EigenDA
+  - name: EigenLayer
+  - name: Thirdweb
+  - name: DRPC
+  - name: QuickNode
+  - name: Allnodes
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
