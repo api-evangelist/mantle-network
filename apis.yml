@@ -22,7 +22,7 @@ tags:
   - Crypto
   - Web3
 created: '2026-05-23'
-modified: '2026-05-23'
+modified: '2026-05-29'
 specificationVersion: '0.19'
 apis:
   - aid: mantle-network:json-rpc-mainnet
@@ -54,6 +54,8 @@ apis:
     properties:
       - type: Documentation
         url: https://docs.mantle.xyz/network/for-developers/resources-and-tooling/node-endpoints-and-providers
+      - type: AsyncAPI
+        url: https://raw.githubusercontent.com/api-evangelist/mantle-network/refs/heads/main/asyncapi/mantle-network-asyncapi.yml
   - aid: mantle-network:json-rpc-sepolia
     name: Mantle JSON-RPC (Sepolia Testnet)
     description: >-

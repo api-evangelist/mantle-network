@@ -1,0 +1,479 @@
+asyncapi: 2.6.0
+info:
+  title: Mantle Network WebSocket JSON-RPC
+  version: 1.0.0
+  description: >-
+    AsyncAPI description of the Mantle Network WebSocket JSON-RPC interface.
+    Mantle is an EVM-compatible Ethereum Layer 2 built on a modified OP Stack
+    with EigenDA for data availability. Its WebSocket endpoints expose the
+    standard Ethereum `eth_subscribe` / `eth_unsubscribe` methods over a
+    persistent WebSocket connection, allowing clients to receive push
+    notifications for new block headers, log events, pending transactions,
+    and node sync status.
+
+    All payloads use the JSON-RPC 2.0 envelope. Method calls are sent as
+    JSON-RPC requests; subscription updates arrive as `eth_subscription`
+    JSON-RPC notifications referencing the subscription id returned by the
+    original `eth_subscribe` call.
+  contact:
+    name: Mantle Network
+    url: https://docs.mantle.xyz/
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  tags:
+    - name: JSON-RPC
+    - name: WebSocket
+    - name: Ethereum
+    - name: Layer 2
+    - name: OP Stack
+    - name: EigenDA
+
+defaultContentType: application/json
+
+servers:
+  mainnet:
+    url: wss://wss.mantle.xyz
+    protocol: wss
+    description: Mantle mainnet public WebSocket JSON-RPC endpoint (chain ID 5000).
+  mainnet-drpc:
+    url: wss://mantle.drpc.org
+    protocol: wss
+    description: Mantle mainnet WebSocket endpoint operated by DRPC.
+  mainnet-publicnode:
+    url: wss://mantle-rpc.publicnode.com
+    protocol: wss
+    description: Mantle mainnet WebSocket endpoint operated by Allnodes / PublicNode.
+  sepolia-drpc:
+    url: wss://mantle-sepolia.drpc.org
+    protocol: wss
+    description: Mantle Sepolia testnet WebSocket endpoint operated by DRPC.
+
+channels:
+  /:
+    description: >-
+      Single WebSocket channel carrying all JSON-RPC traffic. Clients send
+      `eth_subscribe` requests to start subscriptions, receive an id in
+      response, and then receive `eth_subscription` notifications keyed to
+      that id until they call `eth_unsubscribe`.
+    bindings:
+      ws:
+        bindingVersion: 0.1.0
+    publish:
+      operationId: sendRpcRequest
+      summary: Send a JSON-RPC 2.0 request over the WebSocket connection.
+      description: >-
+        Used to invoke `eth_subscribe` and `eth_unsubscribe`, as well as any
+        other standard Ethereum JSON-RPC method supported over WebSocket.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/EthSubscribeNewHeads'
+          - $ref: '#/components/messages/EthSubscribeLogs'
+          - $ref: '#/components/messages/EthSubscribeNewPendingTransactions'
+          - $ref: '#/components/messages/EthSubscribeSyncing'
+          - $ref: '#/components/messages/EthUnsubscribe'
+    subscribe:
+      operationId: receiveRpcMessage
+      summary: Receive JSON-RPC 2.0 responses and subscription notifications.
+      description: >-
+        The server returns either a JSON-RPC response (with the subscription
+        id) for each `eth_subscribe` / `eth_unsubscribe` call, or an
+        `eth_subscription` notification containing the event payload for an
+        active subscription.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/SubscribeResponse'
+          - $ref: '#/components/messages/UnsubscribeResponse'
+          - $ref: '#/components/messages/NewHeadsNotification'
+          - $ref: '#/components/messages/LogsNotification'
+          - $ref: '#/components/messages/NewPendingTransactionsNotification'
+          - $ref: '#/components/messages/SyncingNotification'
+          - $ref: '#/components/messages/JsonRpcError'
+
+components:
+  messages:
+    EthSubscribeNewHeads:
+      name: eth_subscribe_newHeads
+      title: Subscribe to new block headers
+      summary: Subscribe to notifications for each new block header sealed by Mantle.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          method:
+            type: string
+            const: eth_subscribe
+          params:
+            type: array
+            minItems: 1
+            maxItems: 1
+            items:
+              - type: string
+                const: newHeads
+
+    EthSubscribeLogs:
+      name: eth_subscribe_logs
+      title: Subscribe to event logs
+      summary: >-
+        Subscribe to logs matching a filter object (address and/or topics).
+        Notifications are emitted for each matching log included in a new
+        canonical block.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          method:
+            type: string
+            const: eth_subscribe
+          params:
+            type: array
+            minItems: 1
+            maxItems: 2
+            items:
+              - type: string
+                const: logs
+              - type: object
+                description: Standard Ethereum log filter object.
+                properties:
+                  address:
+                    oneOf:
+                      - type: string
+                        pattern: '^0x[0-9a-fA-F]{40}$'
+                      - type: array
+                        items:
+                          type: string
+                          pattern: '^0x[0-9a-fA-F]{40}$'
+                  topics:
+                    type: array
+                    maxItems: 4
+                    items:
+                      oneOf:
+                        - type: 'null'
+                        - type: string
+                          pattern: '^0x[0-9a-fA-F]{64}$'
+                        - type: array
+                          items:
+                            type: string
+                            pattern: '^0x[0-9a-fA-F]{64}$'
+
+    EthSubscribeNewPendingTransactions:
+      name: eth_subscribe_newPendingTransactions
+      title: Subscribe to new pending transactions
+      summary: >-
+        Subscribe to notifications for transactions added to the pending
+        state. By default, the server emits transaction hashes; when the
+        optional second boolean parameter is `true`, full transaction
+        objects are emitted (where supported).
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          method:
+            type: string
+            const: eth_subscribe
+          params:
+            type: array
+            minItems: 1
+            maxItems: 2
+            items:
+              - type: string
+                const: newPendingTransactions
+              - type: boolean
+                description: If true, return full transaction objects instead of hashes.
+
+    EthSubscribeSyncing:
+      name: eth_subscribe_syncing
+      title: Subscribe to sync status changes
+      summary: >-
+        Subscribe to notifications when the node starts or stops syncing
+        with the network.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          method:
+            type: string
+            const: eth_subscribe
+          params:
+            type: array
+            minItems: 1
+            maxItems: 1
+            items:
+              - type: string
+                const: syncing
+
+    EthUnsubscribe:
+      name: eth_unsubscribe
+      title: Cancel an active subscription
+      summary: Cancel the subscription identified by the subscription id.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          method:
+            type: string
+            const: eth_unsubscribe
+          params:
+            type: array
+            minItems: 1
+            maxItems: 1
+            items:
+              - type: string
+                description: The subscription id returned by `eth_subscribe`.
+
+    SubscribeResponse:
+      name: subscribe_response
+      title: eth_subscribe response
+      summary: JSON-RPC response returning the subscription id for an `eth_subscribe` call.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, result]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          result:
+            type: string
+            description: Hex-encoded subscription identifier.
+
+    UnsubscribeResponse:
+      name: unsubscribe_response
+      title: eth_unsubscribe response
+      summary: JSON-RPC response confirming whether the unsubscribe succeeded.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, result]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+          result:
+            type: boolean
+
+    NewHeadsNotification:
+      name: newHeads_notification
+      title: New block header notification
+      summary: Emitted for each new block header sealed by the Mantle network.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          method:
+            type: string
+            const: eth_subscription
+          params:
+            type: object
+            required: [subscription, result]
+            properties:
+              subscription:
+                type: string
+              result:
+                type: object
+                description: Ethereum block header object.
+                properties:
+                  number: { type: string }
+                  hash: { type: string }
+                  parentHash: { type: string }
+                  nonce: { type: string }
+                  sha3Uncles: { type: string }
+                  logsBloom: { type: string }
+                  transactionsRoot: { type: string }
+                  stateRoot: { type: string }
+                  receiptsRoot: { type: string }
+                  miner: { type: string }
+                  difficulty: { type: string }
+                  extraData: { type: string }
+                  gasLimit: { type: string }
+                  gasUsed: { type: string }
+                  timestamp: { type: string }
+                  baseFeePerGas: { type: string }
+                  mixHash: { type: string }
+
+    LogsNotification:
+      name: logs_notification
+      title: Log event notification
+      summary: Emitted for each log matching the original filter.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          method:
+            type: string
+            const: eth_subscription
+          params:
+            type: object
+            required: [subscription, result]
+            properties:
+              subscription:
+                type: string
+              result:
+                type: object
+                properties:
+                  address: { type: string }
+                  blockHash: { type: string }
+                  blockNumber: { type: string }
+                  data: { type: string }
+                  logIndex: { type: string }
+                  removed: { type: boolean }
+                  topics:
+                    type: array
+                    items:
+                      type: string
+                  transactionHash: { type: string }
+                  transactionIndex: { type: string }
+
+    NewPendingTransactionsNotification:
+      name: newPendingTransactions_notification
+      title: New pending transaction notification
+      summary: >-
+        Emitted for each transaction newly accepted into the pending state.
+        The result is a transaction hash by default, or a full transaction
+        object if the subscription was opened with the optional `true` flag.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          method:
+            type: string
+            const: eth_subscription
+          params:
+            type: object
+            required: [subscription, result]
+            properties:
+              subscription:
+                type: string
+              result:
+                oneOf:
+                  - type: string
+                    description: Pending transaction hash.
+                    pattern: '^0x[0-9a-fA-F]{64}$'
+                  - type: object
+                    description: Full pending transaction object.
+
+    SyncingNotification:
+      name: syncing_notification
+      title: Sync status notification
+      summary: Emitted when the node starts or stops syncing with the network.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, method, params]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          method:
+            type: string
+            const: eth_subscription
+          params:
+            type: object
+            required: [subscription, result]
+            properties:
+              subscription:
+                type: string
+              result:
+                oneOf:
+                  - type: boolean
+                    description: False when the node has finished syncing.
+                  - type: object
+                    properties:
+                      syncing:
+                        type: boolean
+                      status:
+                        type: object
+                        properties:
+                          startingBlock: { type: string }
+                          currentBlock: { type: string }
+                          highestBlock: { type: string }
+                          pulledStates: { type: string }
+                          knownStates: { type: string }
+
+    JsonRpcError:
+      name: jsonrpc_error
+      title: JSON-RPC error response
+      summary: Standard JSON-RPC 2.0 error envelope returned on invalid requests.
+      contentType: application/json
+      payload:
+        type: object
+        required: [jsonrpc, id, error]
+        properties:
+          jsonrpc:
+            type: string
+            const: '2.0'
+          id:
+            oneOf:
+              - type: integer
+              - type: string
+              - type: 'null'
+          error:
+            type: object
+            required: [code, message]
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+              data:
+                description: Optional implementation-specific error data.
