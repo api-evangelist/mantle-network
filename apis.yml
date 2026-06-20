@@ -11,7 +11,7 @@ description: >-
   WebSocket subscriptions, the Mantle Explorer (Blockscout-based REST API),
   a canonical L1 <-> L2 bridge, and standard EVM SDKs (viem, ethers, Hardhat,
   Foundry, Thirdweb).
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Layer 2
   - Ethereum
