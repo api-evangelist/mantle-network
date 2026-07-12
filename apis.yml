@@ -152,6 +152,8 @@ apis:
       - type: Repository
         url: https://github.com/mantlenetworkio/mantle
 common:
+  - type: DomainSecurity
+    url: security/mantle-network-domain-security.yml
   - type: Website
     url: https://www.mantle.xyz/
   - type: Documentation
@@ -166,6 +168,8 @@ common:
     url: https://x.com/Mantle_Official
   - type: Discord
     url: https://discord.gg/0xMantle
+  - url: https://www.mantle.xyz/blog/rss.xml
+    type: Blog
 integrations:
   - name: EigenDA
   - name: EigenLayer
