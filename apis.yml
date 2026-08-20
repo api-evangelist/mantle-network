@@ -62,6 +62,10 @@ apis:
     tags:
       - WebSocket
       - JSON-RPC
+      - Subscription
+    tags_raw:
+      - WebSocket
+      - JSON-RPC
       - Subscriptions
     properties:
       - type: Documentation
