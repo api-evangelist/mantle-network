@@ -11,6 +11,18 @@ description: >-
   WebSocket subscriptions, the Mantle Explorer (Blockscout-based REST API),
   a canonical L1 <-> L2 bridge, and standard EVM SDKs (viem, ethers, Hardhat,
   Foundry, Thirdweb).
+deliveryModel:
+  model: self-hosted
+  license: MIT
+  open_source: true
+  commercial: false
+  callable_host: false
+  label: Self-hosted open source · you run it yourself
+  confidence: high
+  source:
+  - license
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: unknown
