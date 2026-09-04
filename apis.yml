@@ -33,6 +33,7 @@ accessModel:
   confidence: medium
   source:
   - plans
+  - {url: 'https://explorer.mantle.xyz/', status: 302, note: 'declared website redirects to https://mantlescan.xyz/ — a different registrable domain (mantle.xyz -> mantlescan.xyz), possible rename or acquisition (probed 2026-09-03, roadmap#169)'}
   generated: '2026-07-22'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/mantle-network.png
