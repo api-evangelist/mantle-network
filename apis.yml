@@ -37,6 +37,9 @@ accessModel:
   generated: '2026-07-22'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/mantle-network.png
+x-docs-platform: gitbook
+x-docs-platform-confidence: high
+x-docs-platform-checked: 2026-10-03
 tags:
   - Layer 2
   - Ethereum
@@ -46,6 +49,7 @@ tags:
   - JSON-RPC
   - Crypto
   - Web3
+  - Real-Time
 created: '2026-05-23'
 modified: '2026-05-29'
 specificationVersion: '0.23'
