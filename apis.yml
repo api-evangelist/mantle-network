@@ -185,6 +185,12 @@ apis:
       - type: Repository
         url: https://github.com/mantlenetworkio/mantle
 common:
+  - type: Plans
+    url: plans/mantle-network-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/mantle-network-rate-limits.yml
+  - type: FinOps
+    url: finops/mantle-network-finops.yml
   - type: IssueTracker
     url: https://github.com/mantle-lsp/contracts/issues
   - type: License
