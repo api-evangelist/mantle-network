@@ -47,6 +47,16 @@ tags:
   - EigenDA
   - Liquid Staking
   - JSON-RPC
+  - Cryptocurrency
+  - Web3
+  - Real-Time
+tags_raw:
+  - Layer 2
+  - Ethereum
+  - Rollup
+  - EigenDA
+  - Liquid Staking
+  - JSON-RPC
   - Crypto
   - Web3
   - Real-Time
@@ -127,6 +137,11 @@ apis:
     humanURL: https://app.mantle.xyz/bridge
     baseURL: https://app.mantle.xyz/bridge
     tags:
+      - Bridge
+      - L1
+      - Layer 2
+      - Assets
+    tags_raw:
       - Bridge
       - L1
       - L2
